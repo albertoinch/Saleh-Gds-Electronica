@@ -1,0 +1,69 @@
+doctype html
+html(lang="es")
+    head
+        meta(charset="UTF-8")
+        title Saleh Gds
+        style.
+            .header {
+                border-top: 3px solid #361618;
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 20px;
+                font-weight: bold;
+                padding: 15px;
+                color: #381618;
+                padding-left: 24px;
+                padding-right: 24px;
+                background-color: #dedede;
+            }
+            .content {
+                padding-left: 24px;
+                padding-right: 24px;
+                padding-top: 12px;
+                padding-bottom: 12px;
+                background-color: #ffffff;
+            }
+            .title {
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 18px;
+                font-weight: 600;
+                color: #374550;
+            }
+            .text {
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 14px;
+                line-height: 20px;
+                text-align: left;
+                color: #333333;
+            }
+            .footer {
+                border-top: 1px solid #000000;
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 14px;
+                padding: 15px;
+                color: #666666;
+                padding-left: 24px;
+                padding-right: 24px;
+                background-color: #eeeeee;
+            }
+    body
+        table(width='640px;')
+            tr
+                td(class='header') Saleh Gds
+            tr
+                td(class='content')
+                    if estado == 'ANULADO'
+                        div(class='text') Estimado(a) #{nombre}#[br]Su factura fue anulada, pude descargar la misma del siguiene enlace:
+                        div &nbsp;
+                        div(class='text') La representación gráfica puede ser descargada de: #[a(href=pdf) Factura PDF]
+                    else
+                        div(class='text') Estimado(a) #{nombre}#[br]Su factura fue emitida, pude descargar la misma de los siguientes enlaces:
+                        div &nbsp;
+                        div(class='text') La representación gráfica puede ser descargada de: #[a(href=pdf) Factura PDF]
+                        div &nbsp;
+                        div(class='text') La factura firmada digitalmente puede ser descargada de: #[a(href=xml) Factura XML]
+                    div &nbsp;
+                    div(class='text')
+                        b Nota
+                        | .- No responda a este mensaje. En caso de que se le presente alguna duda o inquietud puede contactarse con el emisor de la factura.
+                    div &nbsp;
+                    div &nbsp;

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <br>
+  <table style="width:100%;border-top:solid black 1px">
+    <tr>
+      <td style="width:33%;text-align:left;font-size:12px"><span id='titulo'></span></td>
+      <td style="width:34%;text-align:center;font-size:12px">Página <span id='pagina'></span>/<span id='nroPaginas'></span></td>
+      <td style="width:33%;text-align:right;font-size:12px"><span id='fecha'></span></td>
+    </tr>
+  </table>
+  <script>
+    var info = {};
+    var x = window.location.search.substring(1).split('&');
+    for (var i in x) {
+      var z = x[i].split('=', 2);
+      info[z[0]] = unescape(z[1]);
+    }
+    const date = new Date();
+    document.getElementById('titulo').innerHTML = info.title;
+    document.getElementById('pagina').innerHTML = info.page;
+    document.getElementById('nroPaginas').innerHTML = info.topage;
+    document.getElementById('fecha').innerHTML = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+  </script>
+</body>
+</html>
