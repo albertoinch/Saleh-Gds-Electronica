@@ -319,6 +319,7 @@ console.log(lista);
         }
         const facturas = await app.dao.venta.getPendientes('PENDIENTE', eventoSignificativoRes.cufd_evento.codigo, tipoEmision, cafc, t);
         if (facturas.length) {
+            const sended = await app.dao.venta.getBase(eventoSignificativoRes.id_evento_significativo, cafc, t);
             const params = {
                 codigoAmbiente: facturas[0].punto_venta.codigoAmbiente,
                 codigoDocumentoSector: facturas[0].codigo_documento_sector,
@@ -343,7 +344,8 @@ console.log(lista);
                 const pack = {};
                 for (let i = k * 500; i < (k + 1) * 500 && i < facturas.length; i++) {
                     if (Object.keys(archivos).indexOf(facturas[i].codigo_documento_sector) < 0) {
-                        nro[facturas[i].codigo_documento_sector] = 0;
+                        const key = Object.keys(sended)[0];
+                        nro[facturas[i].codigo_documento_sector] = sended[key].length + k * 500;
                         archivos[facturas[i].codigo_documento_sector] = [];
                         pack[facturas[i].codigo_documento_sector] = tar.pack();
                     } else {
@@ -384,14 +386,13 @@ console.log(lista);
                     }
                 }
                 if (eventoSignificativoRes.archivos == null) {
-                    eventoSignificativoRes.archivos = archivos;
-                } else {
-                    const key = Object.keys(archivos)[0];
-                    eventoSignificativoRes.archivos[key] = eventoSignificativoRes.archivos[key].concat(archivos[key]);
+                    eventoSignificativoRes.archivos = sended;
                 }
+                const key = Object.keys(archivos)[0];
+                eventoSignificativoRes.archivos[key] = eventoSignificativoRes.archivos[key].concat(archivos[key]);
             }
         } else {
-            eventoSignificativoRes.archivos = {};
+            eventoSignificativoRes.archivos = await app.dao.venta.getBase(eventoSignificativoRes.id_evento_significativo, cafc, t);
             //throw Error('No existen facturas pendientes.');
         }
         eventoSignificativoRes.fid_cufd = cufd.id_cufd;

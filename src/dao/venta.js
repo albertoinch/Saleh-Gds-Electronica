@@ -605,6 +605,21 @@ options.logging = console.log;
         }
     }
 
+    async function getBase(id, cafc, t) {
+        return await app.db.sequelize.query(`SELECT jsonb_build_object('1', coalesce(jsonb_agg(v), '[]'::JsonB)) archivos
+            FROM (SELECT jsonb_build_object('nro', row_number() OVER (ORDER BY id_venta) - 1, 'id_venta', id_venta) v
+                FROM evento_significativo e
+                INNER JOIN cufd c ON e.fid_cufd_evento = c.id_cufd
+                INNER JOIN venta v ON v.tipo_emision = 2 AND v.cafc = :cafc AND v.estado <> 'PENDIENTE' AND c.codigo = v.cufd AND (to_timestamp(v.fecha_emision, 'YYYY-MM-DD''THH24:MI:SS.MS') >= e.fecha_inicio OR to_timestamp(v.fecha_emision, 'YYYY-MM-DD''THH24:MI:SS.MS') <= e.fecha_fin)
+                WHERE e.id_evento_significativo = :id) v`, {
+            replacements: {
+                cafc: cafc,
+                id: id
+            },
+            transaction: t
+        }).then(result => result[0][0].archivos);
+    }
+
     async function getPendientes(estado, cufd, tipoEmision, cafc, t) {
         const where = {
             estado: estado
@@ -941,6 +956,7 @@ options.logging = console.log;
         getDatos,
         put,
         setCodigoAnulacion,
+        getBase,
         getPendientes,
         getRango,
         setCodigoRecepcion,
