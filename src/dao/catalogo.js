@@ -277,11 +277,14 @@ module.exports = (app) => {
                 }
             }
             const fechaHora = await impuestos.sincronizarFechaHora(params);
-console.log(fechaHora);
             if (fechaHora.transaccion) {
                 app.diferencia = moment(fechaHora.fechaHora).diff(moment());
             } else {
-                throw Error('No se pudo sincronizar la fecha y hora.');
+                if (fechaHora.mensajesList) {
+                    throw Error(fechaHora.mensajesList.map(val => val.descripcion));
+                } else {
+                    throw Error('No se pudo sincronizar la fecha y hora.');
+                }
             }
         } else {
             throw Error(await app.dao.catalogo.getError(conn.toString(), t));
@@ -298,7 +301,11 @@ console.log(fechaHora);
                 if (fechaHora.transaccion) {
                     app.diferencia = moment(fechaHora.fechaHora).diff(moment());
                 } else {
-                    throw Error('No se pudo sincronizar la fecha y hora.');
+                    if (fechaHora.mensajesList) {
+                        throw Error(fechaHora.mensajesList.map(val => val.descripcion));
+                    } else {
+                        throw Error('No se pudo sincronizar la fecha y hora.');
+                    }
                 }
             } else {
                 throw Error(await app.dao.catalogo.getError(conn.toString(), t));
