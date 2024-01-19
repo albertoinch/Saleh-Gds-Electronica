@@ -1,0 +1,161 @@
+doctype html
+html
+    head
+        title= title
+        meta(charset='utf-8')
+        style(type='text/css').
+            @page {
+                size: Letter;
+                margin: 0;
+            }
+            @media screen {
+                html, body {
+                    width: 279mm;
+                    height: 216mm;
+                    margin: 0mm;
+                }
+            }
+            body {
+                font-size: 100%;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 80%;
+            }
+            thead {
+                display: table-header-group;
+            }
+            tr {
+                page-break-inside: avoid;
+            }
+            th {
+                padding: 3px;
+            }
+            td {
+                padding: 3px;
+            }
+            .container {
+                width: 70%;
+            }
+            .anulado {
+                background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASEAAAD2AQMAAACjn6N7AAAABlBMVEUmF1b/AAD2rHDlAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAARdSURBVGje7Zo9rt02EEapEDA7s3WnLbhMYYBeVgojZODCy8hSImcDWUIEpEirdAIia8IZKi3PFLf0BfzcHDyRn2a++bkvhO+feHioIh5KZHM8UMTxyCRyMbWK3J7Di+P4tVPNcUXHJReldhZid0iRpK1M5buDJ1JXfyjKup79Ah4qsPiln7y6KI4wpVak6u6lMr7uenip5KLiq6jzhdSl8foaqtwvpERPzwbQXNQW0jwK49nf9E5Uf1zuyZgv8Ihdk3G9wAbP2BOonmSDnfw6dwC1QfYcs0H0LwUaeaE9bCNfjXYk8uis1JHB71fZixxUO4o0VR6u2A0pdmruOGqB+m9eH/X3BDTLpC8GbTDrqcurKLXBG8/lsVS7YybKSgZSVjJeRVXxUD0mtDw6LIIpldVHofYm/opl1gIVKRW/zMv/MWSd281yjvSYZ5mZZJVlbjdWOIt8nuei6t5//DGvB0WOYRRtHg+XOSbktQZXAlNa7FkRTGkxy13AlJQ6rCpQZ3npHTbsP5Wal0/5W49PLlH/0TNRDNaj9hjMJ1GlK5qgUS1nf4kh7UT117PFRg2oCr9QXl+hcmPcqcLNbNbfhY1L9wfHjJCtYBOV7uiYSpJk+dXhN6vki6nf7niyK8m5HA7qCB8dFI5KlkRzsZaHgoc1o0CsZI+isr7asSm4yqAO7vv//zlJ69NBPbNbPbnEBioaT9OClKlOZapYIJPdWEHA8mn9DfXho+8C63o7uqCQ5x326ILezK2rNBN/TfP2czPxy5f5+9lM/Po7rBBM/HkG6QW7+HFO6QW7+GlO6QW7+HmejUolbf0bxWA/WxWMrn424eha5Btlo0aX4NZFqYq2lE188vAh/rwl2R7xp0Ef90f8qRBpN3uDZZAGu9wBIkLT3sTfaDVg4jeyGw0HcfT9W/jk6Pu38CPajQbze3zVEQtQtjaPCl5yUgfWgx+ewXJOpeH1UA9yM1mBKo/dzKm6mfhAdRlU/Apd8TGyEexm7GXYlLqsC3XYlhcQzmM7cNHar8hYgjRcTwlun/Owm9tlN46S1+3mpJ5LxZ/L9fERfy7XYX1ShHXRbeJD36U7VIvBuXWZn/b/Yay8wurYMUrI2ITrkJfRIjp1Jg91R7QIXb99xalF128H7p5WnSuF90V/ijiovziaNQQ5MzQEC09Ai4rKA4JcnmlK1x88TfUQzOLYKoUojq1Sg3B+8+T/Om8/28h/aD+3p+XdaNTgEJRrmC+Nbo45KZnmbG+eJelq1kbfFa1mkyuaszyNBJxLV4MQgtmClPI/37qLIPF1UFez3HHoFxsT5lTU41d6j79oT/wzUU2P/4Eytunx3xG1ZU7FTnm2A0bhNkK/lOGvNe37CqTqzjV2bM74XPXoLo53LP/KXhu7kmxrcFDtbWDvcny1boXWQ50uyvO3CNnzRwaOr20H5YB6Er2S8pwrOimPEstLqd1zSSe1uSiPEmRdz+eTi/rJRb0Pr/n8B6XlySimXeFWAAAAAElFTkSuQmCC");
+            }
+    - var myStyle = (estado == 'ANULADO' ? 'anulado' : '')
+    body(class=myStyle)
+        div(style="width: 100%")
+            div
+                div(style="display:inline-block; width: 40%; height: 13em; text-align: center")
+                    div
+                        strong #{datos.facturaElectronicaCompraVenta.cabecera.razonSocialEmisor}
+                    div
+                        if datos.facturaElectronicaCompraVenta.cabecera.codigoSucursal == 0
+                            strong Casa Matriz
+                        else
+                            strong Sucursal No. #{datos.facturaElectronicaCompraVenta.cabecera.codigoSucursal}
+                    div No. Punto de Venta #{datos.facturaElectronicaCompraVenta.cabecera.codigoPuntoVenta}
+                    div #{datos.facturaElectronicaCompraVenta.cabecera.direccion}
+                    div &nbsp;
+                    div
+                        strong Teléfono:
+                        span #{datos.facturaElectronicaCompraVenta.cabecera.telefono}
+                    div La Paz
+                div(style="float: right; width: 30%;")
+                    div
+                        strong NIT:
+                        span #{datos.facturaElectronicaCompraVenta.cabecera.nitEmisor}
+                    div
+                        strong FACTURA N°:
+                        span #{datos.facturaElectronicaCompraVenta.cabecera.numeroFactura}
+                    div(style="word-wrap: break-word;")
+                        strong CÓD. AUTORIZACIÓN:
+                        span(style="font-size: 0.8em;") #{datos.facturaElectronicaCompraVenta.cabecera.cuf}
+
+                div(style="text-align: center;")
+                    p(style="font-size: 2em; font-weight: bold; margin: 0px") FACTURA
+                    p (Con derecho a crédito fiscal)
+                div(style="margin-top:1.5em")
+                    div(style="display:inline-block; width: 50%; height: 5em;")
+                        div
+                            strong Fecha:
+                            span #{fecha}
+                        div 
+                            div 
+                                strong Nombre/Razón Social: 
+                                span #{datos.facturaElectronicaCompraVenta.cabecera.nombreRazonSocial}
+                    div(style="float: right; width: 30%; word-wrap: break-word;") 
+                        div
+                            strong NIT/CI/CEX: 
+                            if datos.facturaElectronicaCompraVenta.cabecera.complemento && datos.facturaElectronicaCompraVenta.cabecera.complemento != ''
+                                span #{datos.facturaElectronicaCompraVenta.cabecera.numeroDocumento}-#{datos.facturaElectronicaCompraVenta.cabecera.complemento}
+                            else
+                                span #{datos.facturaElectronicaCompraVenta.cabecera.numeroDocumento}
+                        div 
+                            strong Cód. cliente: 
+                            span #{datos.facturaElectronicaCompraVenta.cabecera.codigoCliente}    
+        br
+        div(style="width: 100%; clear: both")
+            table(width="100%", border="1px solid black", style="border-collapse: collapse")
+                thead(style = "background-color: #BDC2CB")
+                    tr
+                        th Código Producto/Servicio
+                        th Cantidad
+                        th Unidad de Medida
+                        th Descripción
+                        th Precio Unitario
+                        th Descuento
+                        th SUBTOTAL
+                tbody
+                    //each item, i in datos.facturaElectronicaCompraVenta.detalle
+                    each item, i in detalle
+                        tr
+                            td(style="padding-bottom: 10px") #{item.codigoProducto}
+                            td(style="padding-bottom: 10px") #{item.cantidad}
+                            td(style="padding-bottom: 10px") #{item.unidadMedida}
+                            td(style="padding-bottom: 10px") #{item.descripcionItem} (#{item.descripcion}) #{item.numeroImei} #{item.numeroSerie}
+                            td(style="text-align: right") #{item.precioUnitario}
+                            td(style="text-align: right") #{item.montoDescuento}
+                            td(style="text-align: right") #{item.subTotal}
+        br
+        div(style="width: 100%; clear: both")
+            div(style="display: inline-block; height: 8em; width: 60%;")
+                strong Son: #{literal}
+            div(style="width: 40%; float: right;")
+                table(width="100%", border="1px solid black")
+                    tr
+                        td(style="text-align: left;") SubTotal Bs.:
+                        td(style="text-align: right;") #{(parseFloat(datos.facturaElectronicaCompraVenta.cabecera.montoTotal) + parseFloat(datos.facturaElectronicaCompraVenta.cabecera.descuentoAdicional)).toFixed(2)}
+                    tr
+                        td(style="text-align: left;") Descuento Bs.:
+                        td(style="text-align: right;") #{datos.facturaElectronicaCompraVenta.cabecera.descuentoAdicional}
+                    tr
+                        td(style="text-align: left;") Total Bs.:
+                        td(style="text-align: right;") #{datos.facturaElectronicaCompraVenta.cabecera.montoTotalMoneda}
+                    tr
+                        td(style="text-align: left;") Monto Gift Card Bs.:
+                        td(style="text-align: right;") #{datos.facturaElectronicaCompraVenta.cabecera.montoGiftCard}
+                    tr
+                        td(style="text-align: left;")
+                            strong Monto a Pagar Bs.:
+                        td(style="text-align: right;") #{(datos.facturaElectronicaCompraVenta.cabecera.montoTotal - datos.facturaElectronicaCompraVenta.cabecera.montoGiftCard).toFixed(2)}
+                    tr
+                        td(style="text-align: left;")
+                            strong Importe Base para Crédito Fiscal:
+                        td(style="text-align: right;") #{datos.facturaElectronicaCompraVenta.cabecera.montoTotalSujetoIva}
+
+        br
+        br
+        div(style="width: 100%; text-align: center; font-size: 100%;") "ESTA FACTURA CONTRIBUYE AL DESARROLLO DEL PAÍS. EL USO ILÍCITO DE ÉSTA SERÁ SANCIONADO PENALMENTE DE ACUERDO A LEY"
+        br
+        div(style="width: 100%; text-align: center; font-size: 100%;") #{datos.facturaElectronicaCompraVenta.cabecera.leyenda}
+        br
+        if tipo_emision == 1
+            div(style="width: 100%; text-align: center; font-size: 100%;") Este documento es la Representación Gráfica de un Documento Fiscal Digital emitido en una Modalidad de Facturación en Línea
+        else
+            div(style="width: 100%; text-align: center; font-size: 100%;") Este documento  es  la  Representación  Gráfica  de  un  Documento Fiscal Digital emitido fuera de línea, verifique su envío con su proveedor o en la página web www.impuestos.gob.bo
+        div &nbsp;
+        div &nbsp;
+        div(style="width: 100%; clear: both")
+            div(style="width: 58%; float: right;")
+                div(style="width: 157px; border-style: solid; border-width: 1px")
+                    img(src="data:image;base64," + qr, style="width: 155px; height: 155px;")

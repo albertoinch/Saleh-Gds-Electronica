@@ -1,0 +1,59 @@
+doctype html
+html
+    head
+        title= title
+        meta(charset='utf-8')
+        style(type='text/css').
+            @page {
+                size: Letter;
+                margin: 0;
+            }
+            @media screen {
+                html, body {
+                    width: 279mm;
+                    height: 216mm;
+                    margin: 0mm;
+                }
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 75%;
+            }
+            th, td {
+                border: 1px solid black;
+                margin: 0px;
+                padding: 5px;
+            }
+    body
+        div(style="text-align: center;")
+            if validado
+                h1 Facturas Emitidas
+            else
+                h1 Facturas Anuladas
+        div #[strong Desde: ] #{desde} #[strong hasta: ] #{hasta}
+        table
+            tr
+                th Fecha Emisión
+                th Tipo
+                th Nro. Factura
+                th Nro. Documento 
+                th Nombre/Razón Social
+                th Monto
+                th Dominios
+                th Certificados
+            each f in datos
+                tr
+                    td #{f.fecha_emision}
+                    td #{f.tipo_factura}
+                    td #{f.numero_factura}
+                    td #{f.numero_documento}
+                    td #{f.nombre_razon_social}
+                    td(style="text-align: right;") #{f.monto}
+                    td(style="text-align: right;") #{f.nic}
+                    td(style="text-align: right;") #{f.certificado}
+            tr
+                th(colspan="5") Total
+                th(style="text-align: right;") #{total}
+                th(style="text-align: right;") #{nic}
+                th(style="text-align: right;") #{certificado}
