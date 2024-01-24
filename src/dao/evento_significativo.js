@@ -193,7 +193,7 @@ module.exports = (app) => {
             transaction: t,
             returning: true
         });
-        await models.cufd.update({
+        /*await models.cufd.update({
             estado: 'CERRADO'
         }, {
             where: {
@@ -201,7 +201,7 @@ module.exports = (app) => {
                 estado: 'ACTIVO'
             },
             transaction: t
-        });
+        });*/
         await cola.cufd(id, 'cola', t);
         return eventoSignificativoRes[1];
     }
@@ -253,12 +253,14 @@ module.exports = (app) => {
             throw new Error('OverTime');
         }
         const rango = await app.dao.venta.getRango('PENDIENTE', eventoSignificativoRes.cufd_evento.codigo, t);
+console.log(rango);
         if (eventoSignificativoRes.fecha_inicio.getTime() > moment(rango.min).toDate().getTime()) {
             eventoSignificativoRes.fecha_inicio = moment(rango.min).toDate();
         }
         if (eventoSignificativoRes.fecha_fin.getTime() < moment(rango.max).toDate().getTime()) {
             eventoSignificativoRes.fecha_fin = moment(rango.max).toDate();
         }
+console.log(eventoSignificativoRes.fecha_inicio);
         const params = {
             codigoAmbiente: puntoVenta.codigoAmbiente,
             codigoMotivoEvento: eventoSignificativoRes.codigo,
@@ -279,6 +281,17 @@ console.log(params);
 console.log('----------------------------------------');
 console.log(res);
         if (!res.transaccion) {
+console.log('****************************************');
+console.log({
+                codigoAmbiente: params.codigoAmbiente,
+                codigoPuntoVenta: params.codigoPuntoVenta,
+                codigoSistema: params.codigoSistema,
+                codigoSucursal: params.codigoSucursal,
+                cufd: params.cufd,
+                cuis: params.cuis,
+                fechaEvento: new Date(eventoSignificativoRes.fecha_inicio.toDateString()).toJSON(),
+                nit: params.nit
+            });
             const lista = await impuestos.consultaEventoSignificativo({
                 codigoAmbiente: params.codigoAmbiente,
                 codigoPuntoVenta: params.codigoPuntoVenta,
@@ -289,16 +302,13 @@ console.log(res);
                 fechaEvento: new Date(eventoSignificativoRes.fecha_inicio.toDateString()).toJSON(),
                 nit: params.nit
             });
+console.log(lista);
             if (!lista.transaccion) {
                 throw Error(await app.dao.catalogo.getError(lista.mensajesList.map(val => val.codigo.toString())));
             }
-console.log('----------------------------------------');
-console.log(lista);
             res = lista.listaCodigos.find(e => e.codigoEvento == eventoSignificativoRes.codigo && new Date(e.fechaInicio).getTime() == eventoSignificativoRes.fecha_inicio.getTime());
-console.log('----------------------------------------');
-console.log(res);
             if (!res) {
-                throw Error(await app.dao.catalogo.getError(res.mensajesList.map(val => val.codigo.toString())));
+                throw Error('No se encontró coincidencia con la fecha de inicio.');
             }
         }
         eventoSignificativoRes.codigo_recepcion = res.codigoRecepcionEventoSignificativo;
@@ -338,8 +348,9 @@ console.log(res);
                     nro[facturas[i].codigo_documento_sector]++;
                 }
                 if (facturas[i].tipo_emision == 1) {
-                    const f = await app.dao.factura.actualizar(facturas[i].id_venta, 2, facturas[i].datos, facturas[i].cufd, t);
+                    const f = await app.dao.factura.actualizar(facturas[i].id_venta, 2, facturas[i].datos, eventoSignificativoRes.cufd_evento.toJSON(), t);
                     pack[facturas[i].codigo_documento_sector].entry({ name: `factura${i}.xml` }, f);
+                    params.codigoEmision = 2;
                 } else {
                     pack[facturas[i].codigo_documento_sector].entry({ name: `factura${i}.xml` }, facturas[i].factura);
                 }

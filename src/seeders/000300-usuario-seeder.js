@@ -5,7 +5,7 @@ module.exports = {
     return queryInterface.bulkInsert('usuario', [
       {
         //1
-        usuario: 'sanfrancisco',
+        usuario: 'flota',
         contrasena: '08c5ffdd6d1da0d38131e7696acebe8b7a04652e3c1f0b8261135f98a1c92170',
         fid_persona: 1,
         _usuario_creacion: 'admin',

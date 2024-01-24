@@ -10,7 +10,7 @@ module.exports = {
       {
         // 1
         nombre: 'San Francisco',
-        nit: 139277027,
+        nit: 1234567010,
         codigo_ambiente: 2,
         codigo_modalidad: config.impuestos.codigoModalidad,
         estado: 'ACTIVO',

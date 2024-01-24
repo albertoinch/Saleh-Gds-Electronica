@@ -91,7 +91,7 @@ module.exports = (app) => {
         if (!venta.cuis) {
             throw new Error('No se encontró un CUIS activo.');
         }
-        if (!venta.eventoSignificativo) {
+        /*if (!venta.eventoSignificativo) {
             let cambiar = false;
             try {
                 cambiar = (await impuestos.verificarComunicacion()).transaccion == false;
@@ -120,7 +120,7 @@ module.exports = (app) => {
                 venta.idEventoSignificativo = evento.id_evento_significativo;
                 venta.fechaEventoSignificativo = evento.fecha_inicio;
             }
-        }
+        }*/
 console.log('----- a');
         venta.fechaEmision = moment(app.fecha()).format('YYYY-MM-DDTHH:mm:ss.SSS');
         if (venta.eventoSignificativo && venta.estadoEventoSignificativo == 'CERRANDO') {
