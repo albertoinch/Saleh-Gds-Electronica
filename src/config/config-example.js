@@ -22,30 +22,30 @@ module.exports = () => {
             }
         },
         correo: {
-            host: 'smtp.entidad.dominio',
-            port: 587,
+            host: 'localhost',
+            port: 25,
             secure: false,
             ignoreTLS: false,
             tls: { rejectUnauthorized: false },
-            auth: {
+            /*auth: {
                 user: 'user@example.domain',
                 pass: 'pwd'
-            }
+            }*/
         },
         correo_cco: 'factura@dominio',
         api: {
-            main: '/api/v1',
-            pub: '/'
+            main: '/sfe/serv/api/v1',
+            pub: '/sfe/serv/'
         },
-        puerto: 8000,
+        puerto: 3000,
         firma: {
-            file: '/home/fernando/softoken.p12',
+            file: '/home/saleh/softoken.p12',
             pass: 'Contrasena12',
             privateKey: 'ADSIB'
         },
         impuestos: {
-            TokenApi: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJEQ2FycmV0ZXJvMSIsImNvZGlnb1Npc3RlbWEiOiI3NkY4QURENTlGNzdBRjRCN0MzOTU0RiIsIm5pdCI6Ikg0c0lBQUFBQUFBQUFETTJOclcwTkRBeU1MUUVBQ0drWWVJS0FBQUEiLCJpZCI6Mjg4OTUzLCJleHAiOjE3MDM5ODA4MDAsImlhdCI6MTY3NDU5MzQ5Miwibml0RGVsZWdhZG8iOjMzNTk5MDIwMTksInN1YnNpc3RlbWEiOiJTRkUifQ.WQhS5oN__-ix5d2lvdHRO7xcGuNuyPjRlJUdV0PvTngijNpjHdBuboREH5io8Xqa2fOXbyAZYoAk6U4-c1Iwpg',
-            codigoSistema: '76F8ADD59F77AF4B7C3954F',
+            TokenApi: 'Token SIAT',
+            codigoSistema: 'Codio SIAT',
             codigoModalidad: 2,
             diasAnulacion: 9,
             codigos: 'https://pilotosiatservicios.impuestos.gob.bo/v2/FacturacionCodigos?wsdl',
