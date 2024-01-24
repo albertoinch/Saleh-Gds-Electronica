@@ -3,7 +3,7 @@
 ## Instalacion de paquetes
 
 ```sh
-apt install git postgresql curl openjdk-17-jdk supervisor
+apt install git postgresql curl openjdk-17-jdk supervisor apache2
 ```
 
 ## Crear usuario de base de datos
@@ -83,9 +83,9 @@ Establecer el token de impuestos, código de sistema, certificado de firma digit
 
 ## Inicio con el sistema
 
-Editar el archivo
+Editar el archivo como usuario root
 ```sh
-sudo nano /etc/supervisor/conf.d/facturacion-backend.conf
+nano /etc/supervisor/conf.d/facturacion-backend.conf
 ```
 
 Con el contenido
@@ -103,3 +103,61 @@ stdout_logfile=/home/saleh/logs/facturacion-backend-out.log
 stderr_logfile=/home/saleh/logs/facturacion-backend-error.log 
 user=saleh
 ```
+
+## Apache
+
+Configurar acceso externo
+```sh
+nano /etc/apache2/sites-available/000-default.conf
+```
+
+```
+    ProxyPreserveHost On
+
+    ProxyPass /sfe/serv http://127.0.0.1:3000/sfe/serv
+    ProxyPassReverse /sfe/serv http://127.0.0.1:3000/sfe/serv
+```
+
+```sh
+a2enmod proxy
+a2enmod proxy_http
+```
+
+# Front-End
+
+Usuario y home de saleh
+```sh
+su saleh
+cd ~
+```
+
+Instalar node 8
+```sh
+nvm install node 8
+nvm use 8
+```
+
+Clonar backend
+```sh
+git clone https://github.com/albertoinch/Saleh-Gds-Electronica-FrontEnd.git
+cd Saleh-Gds-Electronica-FrontEnd
+npm install
+```
+
+Configurar IP
+```sh
+cp src/config/config.ts src/config/config.prod.ts
+nano src/config/config.prod.ts
+```
+
+Transpilar
+```sh
+npm run gitbuild
+```
+
+Publicar como usuario root
+```sh
+cd /var/www/html
+ln -s /home/saleh/Saleh-Gds-Electronica-FrontEnd/frontend sfe
+```
+
