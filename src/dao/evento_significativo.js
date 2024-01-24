@@ -13,7 +13,7 @@ module.exports = (app) => {
 
     async function getEvento(idPuntoVenta, t) {
         const eventoSignificativoRes = await models.evento_significativo.findOne({
-            attributes: ['fid_punto_venta', 'codigo', 'descripcion', 'fecha_inicio', 'fecha_fin', 'cafc', 'estado'],
+            attributes: ['fid_punto_venta', 'codigo', 'descripcion', 'fecha_inicio', 'fecha_fin', 'manual', 'cafc', 'estado'],
             include: [
                 {
                     model: models.cufd,
@@ -142,6 +142,9 @@ module.exports = (app) => {
                     },
                     fecha_fin: {
                         [Op.gte]: fecha
+                    },
+                    codigo: {
+                        [Op.lt]: '5'
                     }
                 },
                 transaction: t
@@ -164,6 +167,7 @@ module.exports = (app) => {
             cafc: evento.cafc,
             fid_cufd_evento: cufdEvento.id_cufd,
             fid_punto_venta: evento.idPuntoVenta,
+            manual: evento.manual ? true : false,
             fecha_inicio: fecha,
             _usuario_creacion: evento.audit_usuario.usuario
         }, {
@@ -288,10 +292,11 @@ console.log(res);
             if (!lista.transaccion) {
                 throw Error(await app.dao.catalogo.getError(lista.mensajesList.map(val => val.codigo.toString())));
             }
-            res = lista.listaCodigos.find(e => e.codigoEvento == eventoSignificativoRes.codigo && new Date(e.fechaInicio).getTime() == eventoSignificativoRes.fecha_inicio.getTime());
-console.log('---------------------------------------- Eventos Registrados');
-console.log(res);
 console.log('----------------------------------------');
+console.log(lista);
+            res = lista.listaCodigos.find(e => e.codigoEvento == eventoSignificativoRes.codigo && new Date(e.fechaInicio).getTime() == eventoSignificativoRes.fecha_inicio.getTime());
+console.log('----------------------------------------');
+console.log(res);
             if (!res) {
                 throw Error(await app.dao.catalogo.getError(res.mensajesList.map(val => val.codigo.toString())));
             }
@@ -360,7 +365,8 @@ console.log('----------------------------------------');
             }
             eventoSignificativoRes.archivos = archivos;
         } else {
-            throw Error('No existen facturas pendientes.');
+            eventoSignificativoRes.archivos = {};
+            //throw Error('No existen facturas pendientes.');
         }
         eventoSignificativoRes.fid_cufd = cufd.id_cufd;
         eventoSignificativoRes.estado = 'CERRADO';
@@ -397,12 +403,26 @@ console.log('----------------------------------------');
         let offset = limit * (page - 1);
 
          return models.evento_significativo.findAndCountAll({
-              //attributes: ['id_evento', 'tipo', 'codigo_recepcion','fecha_inicio','fecha_fin','estado','codigo_evento','descripcion','fid_punto_venta'],
-              attributes: ['id_evento_significativo', 'codigo', 'codigo_recepcion','fecha_inicio','fecha_fin','estado','descripcion','fid_punto_venta'],
-              where: options,
-              limit: limit,
-              offset: offset,
-              order: [['_fecha_creacion', 'DESC']]
+                //attributes: ['id_evento', 'tipo', 'codigo_recepcion','fecha_inicio','fecha_fin','estado','codigo_evento','descripcion','fid_punto_venta'],
+                attributes: ['id_evento_significativo', 'codigo', 'codigo_recepcion','fecha_inicio','fecha_fin','estado','descripcion','fid_punto_venta'],
+                include: [
+                    {
+                        attributes: ['codigo'],
+                        model: models.punto_venta,
+                        as: 'punto_venta',
+                        include: [
+                            {
+                                attributes: ['codigo'],
+                                model: models.sucursal,
+                                as: 'sucursal'
+                            }
+                        ]
+                    }
+                ],
+                where: options,
+                limit: limit,
+                offset: offset,
+                order: [['_fecha_creacion', 'DESC']]
           }).then(function (data) {
              page = Math.ceil(data.count / limit);
              return data;

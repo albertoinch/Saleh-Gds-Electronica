@@ -212,7 +212,6 @@ module.exports = (app) => {
     }
 
     async function post(body, usuario, t) {
-console.log(body);
         const params = await models.sucursal.findOne({
             attributes: [
                 [Sequelize.literal('"contribuyente"."codigo_ambiente"'), 'codigoAmbiente'],
@@ -263,7 +262,6 @@ console.log(body);
                 return p;
             }
         });
-console.log(params);
         let res;
         if (params.codigoTipoPuntoVenta == 1) {
             delete params['codigoTipoPuntoVenta'];

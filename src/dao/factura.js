@@ -220,6 +220,7 @@ console.log('----- c');
             try {
                 validation = await xsd.validateXML(facturaFirmada, `${_path}/xml/${venta.esquema.archivo}.xsd`);
             } catch (e) {
+console.log(e);
                 throw new Error('Validación XSD incorrecta.');
             }
             if (!validation.valid) {
@@ -270,7 +271,7 @@ console.log('----- c');
         if (params.estado == 'ANULADO') {
             throw new Error('La factura ya se encuentra anulada.');
         }
-        if (params.estado != 'VALIDADO') {
+        if (params.estado != 'VALIDADO' && params.estado != 'RECHAZADO') {
             throw new Error(`La factura tiene un estado [${params.estado}].`);
         }
         if (body.audit_usuario.id_grupo != 1 && params._usuario_creacion != body.audit_usuario.usuario) {
@@ -278,7 +279,8 @@ console.log('----- c');
         }
         const keys = Object.keys(params.datos);
         if (moment().isAfter(moment(params.datos[keys[0]].cabecera.fechaEmision).add(1, 'M').set('days', app.config.impuestos.diasAnulacion))) {
-            throw new Error(`La factura fue emitida el mes pasado.`);
+            console.log(moment(params.datos[keys[0]].cabecera.fechaEmision), '-------------');
+            //throw new Error(`La factura fue emitida el mes pasado.`);
         }
         const cufd = await cola.cufd(params.fid_punto_venta, body.audit_usuario.usuario, t);
 
@@ -295,6 +297,7 @@ console.log('----- c');
         params.cufd = cufd.codigo;
         params.codigoEmision = 1;
         let recepcion = await impuestos.anulacionFactura(params);
+console.log(recepcion);
         if (recepcion.transaccion) {
             return await app.dao.venta.setCodigoAnulacion(id, body.codigo, body.motivo, body.audit_usuario.usuario, t);
         } else {

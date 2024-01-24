@@ -25,9 +25,6 @@ console.log(req.body);
         try {
             const factura = await app.dao.factura.crear(req.body, t);
             await t.commit();
-console.log({
-    numeroFactura: factura.numero_factura
-});
             res.json({
                 finalizado: true,
                 mensaje: 'Factura creada.',
@@ -161,12 +158,12 @@ console.log({
                 params = await app.dao.venta.getCuf(req.params.cuf);
                 tipo = params.tipo_emision;
             }
-            if (tipo == '1' && params.estado != 'VALIDADO' && params.estado != 'ANULADO') {
+            if (tipo == '1' && params.estado != 'VALIDADO' && params.estado != 'ANULADO' && params.estado != 'RECHAZADO') {
                 throw new Error(`La factura tiene un estado [${params.estado}].`);
             }
-            if (tipo == '2' && params.estado == 'RECHAZADO') {
+            /*if (tipo == '2' && params.estado == 'RECHAZADO') {
                 throw new Error(`La factura tiene un estado [${params.estado}].`);
-            }
+            }*/
             const archivo = Object.keys(params.datos)[0];
             params.qr = qr.imageSync(`${app.config.urlsFactura.siat}nit=${params.datos[archivo].cabecera.nitEmisor}&cuf=${params.cuf}&numero=${params.datos[archivo].cabecera.numeroFactura}&t=2`, { type: 'png', ec_level: 'H' }).toString('base64');
             params.fecha = moment(params.datos[archivo].cabecera.fechaEmision).format('DD/MM/YYYY HH:mm:ss');
@@ -209,7 +206,7 @@ console.log({
     async function xml(req, res) {
         try {
             const params = await app.dao.venta.getCuf(req.params.cuf);
-            if (params.tipo_emision == '1' && params.estado != 'VALIDADO') {
+            if (params.tipo_emision == '1' && params.estado != 'VALIDADO' && params.estado != 'RECHAZADO') {
                 throw new Error(`La factura tiene un estado [${params.estado}].`);
             }
             res.contentType('text/plain');

@@ -95,6 +95,8 @@ module.exports = (app) => {
                                 id_persona: tokenDecoded.id_persona,
                                 id_contribuyente: tokenDecoded.id_contribuyente,
                                 id_grupo: tokenDecoded.id_grupo,
+                                sucursal: tokenDecoded.sucursal,
+                                punto_venta: tokenDecoded.puntoVenta,
                                 usuario: tokenDecoded.usuario
                             };
                             next();

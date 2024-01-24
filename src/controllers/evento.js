@@ -1,8 +1,12 @@
+const moment = require('moment');
+
 module.exports = (app) => {
     async function post(req, res) {
         if (parseInt(req.body.codigoEvento) < 3) {
-            throw new Error('El código 1 y 2 se gestionan automáticamente.');
+            req.body.fecha_inicio = moment().format('YYYY-MM-DD HH:MM:SS');
+            //throw new Error('El código 1 y 2 se gestionan automáticamente.');
         }
+        req.body.manual = true;
         const t = await app.db.sequelize.transaction();
         try {
             const evento = await app.dao.evento_significativo.crear(req.body, t);

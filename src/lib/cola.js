@@ -40,7 +40,7 @@ module.exports = (app) => {
             const cufd = await app.dao.cufd.getAll(t);
             for (let j = 0; j < cufd.length; j++) {
                 const evento = await app.dao.evento_significativo.getEvento(cufd[j].fid_punto_venta, t);
-                if (evento && parseInt(evento.codigo) < 5) {
+                if (evento && (evento.estado == 'CERRANDO' || !evento.manual || !moment(evento.fecha_inicio).startOf('day').isSame(moment().startOf('day'))) && parseInt(evento.codigo) < 5) {
                     if ((evento.codigo == 1 || evento.codigo == 2) && evento.estado == 'ACTIVO' && process.env.NODE_ENV != 'test') {
                         try {
                             if ((await impuestos.verificarComunicacion()).transaccion) {
@@ -140,6 +140,9 @@ module.exports = (app) => {
                             const men = await app.dao.catalogo.getError(recepcion.mensajesList.map(val => val.codigo.toString()), t);
                             await app.dao.venta.setObservacion(facturas[i].id_venta, men);
                             throw Error(men);
+                        }
+                        if (!recepcion.codigoRecepcion) {
+                            throw Error(JSON.stringify(recepcion));
                         }
                         await app.dao.venta.setCodigoRecepcion(facturas[i].id_venta, recepcion.codigoRecepcion);
                     } catch (error) {

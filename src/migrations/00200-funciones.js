@@ -69,15 +69,15 @@ module.exports = {
                 END IF;
 
                 WITH i AS(INSERT INTO venta(numero_factura, numero_documento, nombre_razon_social, monto, tipo_emision, cafc, datos, factura, cuf, cufd, codigo_documento_sector, email, _usuario_creacion, _fecha_creacion, _fecha_modificacion, fid_punto_venta, fid_cliente)
-                SELECT nro_factura + 1, datos->>'numeroDocumento', datos->>'nombreRazonSocial', SUM("cantidad" * ("precioUnitario" - coalesce("montoDescuento", 0))) - coalesce(datos->>'descuentoAdicional', '0')::Numeric(12,2), (datos->>'tipoEmision')::Int, coalesce(datos->>'cafc', ''), datos, '', '', '', sector, datos->>'email', datos->'audit_usuario'->>'usuario', now(), now(), idPV, idr
-                FROM jsonb_to_recordset(datos->'detalle') AS d("cantidad" Numeric(12, 2), "precioUnitario" Numeric(12, 2), "montoDescuento" Numeric(12, 2))
+                SELECT nro_factura + 1, datos->>'numeroDocumento', datos->>'nombreRazonSocial', SUM(CASE WHEN "subTotal" IS NULL THEN "cantidad" * "precioUnitario" - coalesce("montoDescuento", 0) ELSE "subTotal" END) - coalesce(datos->>'descuentoAdicional', '0')::Numeric(12,2), (datos->>'tipoEmision')::Int, coalesce(datos->>'cafc', ''), datos, '', '', '', sector, datos->>'email', datos->'audit_usuario'->>'usuario', now(), now(), idPV, idr
+                FROM jsonb_to_recordset(datos->'detalle') AS d("cantidad" Numeric(12, 2), "precioUnitario" Numeric(12, 2), "montoDescuento" Numeric(12, 2), "subTotal" Numeric(12, 2))
                 RETURNING id_venta)
                 SELECT id_venta INTO idr
                 FROM i;
 
                 INSERT INTO detalle(fid_venta, codigo, descripcion, cantidad, unidad_medida, precio_unitario, monto_descuento, sub_total, numero_imei, numero_serie, _usuario_creacion, _fecha_creacion, _fecha_modificacion)
-                SELECT idr, i.codigo, d."descripcion", d."cantidad", d."unidadMedida", d."precioUnitario", coalesce(d."montoDescuento", 0), d."cantidad" * (d."precioUnitario" - coalesce(d."montoDescuento", 0)), d."numeroImei", d."numeroSerie", datos->'audit_usuario'->>'usuario', now(), now()
-                FROM item i, jsonb_to_recordset(datos->'detalle') AS d("codigoProducto" Text, "descripcion" Text, "cantidad" Numeric(12, 2), "unidadMedida" Text, "precioUnitario" Numeric(12, 2), "montoDescuento" Numeric(12, 2), "numeroImei" Text, "numeroSerie" Text)
+                SELECT idr, i.codigo, d."descripcion", d."cantidad", d."unidadMedida", d."precioUnitario", coalesce(d."montoDescuento", 0), CASE WHEN d."subTotal" IS NULL THEN d."cantidad" * d."precioUnitario" - coalesce(d."montoDescuento", 0) ELSE "subTotal" END, d."numeroImei", d."numeroSerie", datos->'audit_usuario'->>'usuario', now(), now()
+                FROM item i, jsonb_to_recordset(datos->'detalle') AS d("codigoProducto" Text, "descripcion" Text, "cantidad" Numeric(12, 2), "unidadMedida" Text, "precioUnitario" Numeric(12, 2), "montoDescuento" Numeric(12, 2), "subTotal" Numeric(12, 2), "numeroImei" Text, "numeroSerie" Text)
                 WHERE i.codigo = d."codigoProducto";
 
                 INSERT INTO deposito(fid_venta, id, numero, fecha, monto, facturado, _usuario_creacion, _fecha_creacion, _fecha_modificacion)

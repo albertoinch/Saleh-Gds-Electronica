@@ -69,6 +69,12 @@
             field: 'fid_punto_venta',
             allowNull: false
         },
+        manual: {
+            type: DataType.BOOLEAN,
+            field: 'manual',
+            allowNull: false,
+            defaultValue: false
+        },
         _usuario_creacion: {
             type: DataType.STRING(100),
             field: '_usuario_creacion',

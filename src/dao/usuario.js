@@ -17,6 +17,13 @@ module.exports = (app) => {
                     attributes: ['codigo'],
                     model: models.punto_venta,
                     as: 'punto_venta',
+                    include: [
+                        {
+                            attributes: ['codigo'],
+                            model: models.sucursal,
+                            as: 'sucursal'
+                        }
+                    ]
                 }, {
                     attributes: ['id_grupo', 'grupo'],
                     model: models.grupo,
@@ -60,6 +67,7 @@ module.exports = (app) => {
                     id_grupo: usuarioRes.grupos[0].id_grupo,
                     cargo: usuarioRes.grupos[0].grupo,
                     id_contribuyente: usuarioRes.fid_contribuyente,
+                    sucursal: usuarioRes.punto_venta ? usuarioRes.punto_venta.sucursal ? usuarioRes.punto_venta.sucursal.codigo : '0' : '0',
                     puntoVenta: usuarioRes.punto_venta ? usuarioRes.punto_venta.codigo : '0',
                     exp: usuarioRes.dataValues.exp
                 },
